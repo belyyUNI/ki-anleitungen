@@ -1,0 +1,165 @@
+/* ─── Prose Styles for MDX-Rendered Content ────────────── */
+
+.prose {
+  max-width: 72ch;
+  color: var(--color-text-primary);
+  line-height: var(--leading-relaxed);
+}
+
+/* Headings */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--color-text-primary);
+}
+
+.prose h1 {
+  font-size: var(--text-4xl);
+  margin-block-end: var(--space-8);
+}
+
+.prose h2 {
+  font-size: var(--text-2xl);
+  margin-block-start: var(--space-16);
+  margin-block-end: var(--space-4);
+  padding-block-end: var(--space-2);
+  border-bottom: 1px solid var(--color-surface-3);
+}
+
+.prose h3 {
+  font-size: var(--text-xl);
+  margin-block-start: var(--space-10);
+  margin-block-end: var(--space-3);
+}
+
+.prose h4 {
+  font-size: var(--text-lg);
+  margin-block-start: var(--space-8);
+  margin-block-end: var(--space-2);
+}
+
+/* Paragraphs */
+.prose p {
+  margin-block-end: var(--space-5);
+}
+
+.prose p:last-child {
+  margin-block-end: 0;
+}
+
+/* Lead paragraph */
+.prose .lead {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* Lists */
+.prose ul,
+.prose ol {
+  margin-block-end: var(--space-5);
+  padding-inline-start: var(--space-6);
+}
+
+.prose li {
+  margin-block-end: var(--space-1);
+}
+
+.prose ul > li::marker {
+  color: var(--color-accent);
+}
+
+/* Inline code */
+.prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-code-bg);
+  border: 1px solid var(--color-code-border);
+  color: var(--color-accent);
+}
+
+/* Code blocks */
+.prose pre {
+  margin-block-end: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-code-border);
+  overflow-x: auto;
+}
+
+.prose pre code {
+  display: block;
+  padding: var(--space-5) var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  background-color: var(--color-code-bg);
+}
+
+/* Inline links */
+.prose a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--color-accent-muted);
+  transition: text-decoration-color 150ms ease;
+}
+
+.prose a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
+/* Blockquotes */
+.prose blockquote {
+  margin-block-end: var(--space-5);
+  padding-inline-start: var(--space-5);
+  border-inline-start: 3px solid var(--color-accent);
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* Horizontal rule */
+.prose hr {
+  margin-block: var(--space-12);
+  border: none;
+  height: 1px;
+  background-color: var(--color-surface-3);
+}
+
+/* Images */
+.prose img {
+  border-radius: var(--radius-lg);
+  margin-block: var(--space-8);
+}
+
+/* Strong / bold */
+.prose strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+/* Tables */
+.prose table {
+  width: 100%;
+  margin-block-end: var(--space-6);
+  border-collapse: collapse;
+}
+
+.prose th {
+  font-weight: var(--font-weight-semibold);
+  text-align: start;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 2px solid var(--color-surface-3);
+  color: var(--color-text-primary);
+}
+
+.prose td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-surface-2);
+}

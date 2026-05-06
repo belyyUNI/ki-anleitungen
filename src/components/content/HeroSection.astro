@@ -1,0 +1,163 @@
+---
+import Button from "@components/ui/Button.astro";
+
+export interface Props {
+  guideCount?: number;
+  modelCount?: number;
+  troubleshootingCount?: number;
+}
+
+const { guideCount = 50, modelCount = 30, troubleshootingCount = 100 } = Astro.props;
+---
+
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="hero-bg" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <span class="hero-badge">Kostenlos. Open Source. Praxisnah.</span>
+
+    <h1 id="hero-heading" class="hero-heading">
+      DGX, Docker, ComfyUI &amp;<br />
+      KI-Modelle <span class="text-accent">verstehen und nutzen</span>
+    </h1>
+
+    <p class="hero-lead">
+      Du arbeitest mit DGX-Servern, Docker-Containern und ComfyUI? Hier findest du
+      praxiserprobte Anleitungen, Workflows und Troubleshooting &mdash; auf Deutsch,
+      direkt anwendbar.
+    </p>
+
+    <div class="hero-actions">
+      <Button href="/guides/" variant="primary" size="lg">
+        Anleitungen entdecken
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </Button>
+      <Button href="/guides/comfyui/comfyui-starten/" variant="secondary" size="lg">
+        Loslegen
+      </Button>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-number">{guideCount}+</span>
+        <span class="stat-label">Anleitungen</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-number">{modelCount}+</span>
+        <span class="stat-label">Modelle</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-number">{troubleshootingCount}+</span>
+        <span class="stat-label">Losungen</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding-block: var(--space-24) var(--space-20);
+    overflow: hidden;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      padding-block: var(--space-32) var(--space-24);
+    }
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 212, 170, 0.06), transparent),
+      radial-gradient(ellipse 40% 50% at 80% 100%, rgba(0, 212, 170, 0.04), transparent);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    padding: var(--space-1) var(--space-4);
+    margin-block-end: var(--space-6);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+    border: 1px solid rgba(0, 212, 170, 0.2);
+    border-radius: var(--radius-full);
+    letter-spacing: 0.02em;
+  }
+
+  .hero-heading {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--color-text-primary);
+    max-width: 14ch;
+    margin-block-end: var(--space-6);
+  }
+
+  @media (min-width: 768px) {
+    .hero-heading {
+      font-size: var(--text-6xl);
+    }
+  }
+
+  .hero-lead {
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+    max-width: 52ch;
+    margin-block-end: var(--space-10);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-block-end: var(--space-16);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: var(--space-10);
+    padding-block-start: var(--space-10);
+    border-top: 1px solid var(--color-surface-3);
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .stat-number {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+  }
+
+  .stat-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+  }
+</style>

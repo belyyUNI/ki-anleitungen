@@ -1,0 +1,124 @@
+---
+export interface Props {
+  type?: "info" | "warning" | "tip" | "danger";
+  title?: string;
+}
+
+const { type = "info", title } = Astro.props;
+
+const typeMeta = {
+  info: { icon: "i", label: title ?? "Info", class: "callout-info" },
+  warning: { icon: "!", label: title ?? "Warnung", class: "callout-warning" },
+  tip: { icon: "~", label: title ?? "Tipp", class: "callout-tip" },
+  danger: { icon: "!!", label: title ?? "Achtung", class: "callout-danger" },
+};
+
+const meta = typeMeta[type];
+---
+
+<aside class={`callout ${meta.class}`}>
+  <div class="callout-header">
+    <span class="callout-icon" aria-hidden="true">{meta.icon}</span>
+    <span class="callout-label">{meta.label}</span>
+  </div>
+  <div class="callout-body">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .callout {
+    margin-block: var(--space-6);
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    border: 1px solid;
+  }
+
+  .callout-info {
+    background-color: rgba(94, 163, 255, 0.08);
+    border-color: rgba(94, 163, 255, 0.2);
+  }
+
+  .callout-warning {
+    background-color: rgba(240, 192, 64, 0.08);
+    border-color: rgba(240, 192, 64, 0.25);
+  }
+
+  .callout-tip {
+    background-color: rgba(0, 212, 170, 0.08);
+    border-color: rgba(0, 212, 170, 0.2);
+  }
+
+  .callout-danger {
+    background-color: rgba(255, 85, 85, 0.08);
+    border-color: rgba(255, 85, 85, 0.25);
+  }
+
+  .callout-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block-end: var(--space-2);
+  }
+
+  .callout-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-bold);
+    border-radius: var(--radius-sm);
+  }
+
+  .callout-info .callout-icon {
+    color: var(--color-info);
+    background-color: rgba(94, 163, 255, 0.15);
+  }
+
+  .callout-warning .callout-icon {
+    color: var(--color-warning);
+    background-color: rgba(240, 192, 64, 0.15);
+  }
+
+  .callout-tip .callout-icon {
+    color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+  }
+
+  .callout-danger .callout-icon {
+    color: var(--color-error);
+    background-color: rgba(255, 85, 85, 0.15);
+  }
+
+  .callout-label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+  }
+
+  .callout-body {
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  .callout-body :global(p) {
+    margin: 0;
+  }
+
+  .callout-body :global(p + p) {
+    margin-block-start: var(--space-2);
+  }
+
+  .callout-body :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 0.1em 0.35em;
+    border-radius: var(--radius-sm);
+    background-color: rgba(255, 255, 255, 0.06);
+    color: var(--color-accent);
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+import { getCollection } from "astro:content";
+import LandingLayout from "@layouts/LandingLayout.astro";
+
+const workflows = await getCollection("workflows", ({ data }) => !data.draft);
+const sorted = workflows.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+
+<LandingLayout
+  title="ComfyUI Workflows"
+  description="Bewahrte ComfyUI-Workflows – von txt2img uber ControlNet bis Video-Generierung."
+>
+  <section class="overview">
+    <div class="overview-inner">
+      <h1 class="overview-heading">Workflows</h1>
+      <p class="overview-lead">
+        Erprobte ComfyUI-Workflows mit benotigten Custom Nodes und Modellen.
+        Direkt importierbar oder als Referenz.
+      </p>
+      {sorted.length === 0 ? (
+        <p class="empty-state">Noch keine Workflows dokumentiert. In Arbeit.</p>
+      ) : (
+        <div class="workflow-grid">
+          {sorted.map((w) => (
+            <a href={`/workflows/${w.id.replace(/\.md$/, "")}`} class="workflow-card">
+              <span class="wf-category">{w.data.category}</span>
+              <h2 class="wf-title">{w.data.title}</h2>
+              <p class="wf-desc">{w.data.description}</p>
+              {w.data.requiredNodes.length > 0 && (
+                <span class="wf-nodes">{w.data.requiredNodes.length} Custom Nodes benotigt</span>
+              )}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .overview { padding-block: var(--space-12) var(--space-20); }
+  .overview-inner { max-width: 1280px; margin: 0 auto; padding: 0 var(--space-6); }
+  .overview-heading { font-size: var(--text-4xl); font-weight: var(--font-weight-bold); color: var(--color-text-primary); margin-block-end: var(--space-4); }
+  .overview-lead { font-size: var(--text-lg); color: var(--color-text-secondary); max-width: 56ch; margin-block-end: var(--space-12); }
+  .empty-state { color: var(--color-text-tertiary); font-size: var(--text-lg); padding: var(--space-16) 0; text-align: center; }
+  .workflow-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 640px) { .workflow-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .workflow-grid { grid-template-columns: repeat(3, 1fr); } }
+  .workflow-card { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-5); background: var(--color-surface-1); border: 1px solid var(--color-surface-3); border-radius: var(--radius-lg); transition: transform 200ms ease; }
+  .workflow-card:hover { transform: translateY(-2px); }
+  .wf-category { font-size: var(--text-xs); color: var(--color-accent); text-transform: uppercase; font-weight: var(--font-weight-medium); }
+  .wf-title { font-size: var(--text-lg); font-weight: var(--font-weight-semibold); }
+  .wf-desc { font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .wf-nodes { font-size: var(--text-xs); color: var(--color-text-tertiary); font-family: var(--font-mono); }
+</style>

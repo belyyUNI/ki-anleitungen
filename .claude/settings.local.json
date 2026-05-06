@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(open \"/Users/thomas/Library/Mobile Documents/com~apple~CloudDocs/01 Privat/Programme/Coding/Ki Anleitungen/index.html\")",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npx astro *)",
+      "Bash(curl -s http://localhost:4321/)",
+      "Bash(kill %1)",
+      "Bash(curl -s http://localhost:4321/befehlslegende/)",
+      "Bash(curl -s http://localhost:4321/cheat-sheet/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4321/)",
+      "Bash(open *)",
+      "Bash(npm ls *)",
+      "Bash(npm uninstall *)",
+      "Bash(npx pagefind *)",
+      "Bash(npm run *)",
+      "Bash(pnpm build *)",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$HOME/.local/bin:$PATH\")",
+      "Bash(gh auth *)"
+    ]
+  }
+}

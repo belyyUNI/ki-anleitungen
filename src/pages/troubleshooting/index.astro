@@ -1,0 +1,73 @@
+---
+import { getCollection } from "astro:content";
+import LandingLayout from "@layouts/LandingLayout.astro";
+
+const entries = await getCollection("troubleshooting", ({ data }) => !data.draft);
+const sorted = entries.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+---
+
+<LandingLayout
+  title="Troubleshooting"
+  description="Schnelle Hilfe bei haufigen Fehlern – mit genauen Fehlermeldungen zum direkten Finden."
+>
+  <section class="overview">
+    <div class="overview-inner">
+      <h1 class="overview-heading">Troubleshooting</h1>
+      <p class="overview-lead">
+        Haufige Fehler und ihre Losungen – strukturiert nach Kategorie und durchsuchbar
+        uber die genaue Fehlermeldung.
+      </p>
+
+      <div class="troubleshooting-grid">
+        {sorted.map((e) => (
+          <a href={`/troubleshooting/${e.id.replace(/\.md$/, "")}`} class="troubleshooting-card">
+            <span class="entry-category">{e.data.category}</span>
+            <h2 class="entry-title">{e.data.title}</h2>
+            <p class="entry-problem">{e.data.problem}</p>
+            {e.data.errorMessages.length > 0 && (
+              <div class="entry-errors">
+                {e.data.errorMessages.map((msg) => (
+                  <code class="error-tag">{msg}</code>
+                ))}
+              </div>
+            )}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .overview { padding-block: var(--space-12) var(--space-20); }
+  .overview-inner { max-width: 1280px; margin: 0 auto; padding: 0 var(--space-6); }
+  .overview-heading { font-size: var(--text-4xl); font-weight: var(--font-weight-bold); letter-spacing: var(--tracking-tight); color: var(--color-text-primary); margin-block-end: var(--space-4); }
+  .overview-lead { font-size: var(--text-lg); color: var(--color-text-secondary); max-width: 56ch; margin-block-end: var(--space-12); line-height: var(--leading-relaxed); }
+
+  .troubleshooting-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 640px) { .troubleshooting-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .troubleshooting-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .troubleshooting-card {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--space-5); background-color: var(--color-surface-1);
+    border: 1px solid var(--color-surface-3); border-left: 3px solid var(--color-warning);
+    border-radius: var(--radius-lg);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .troubleshooting-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-card-hover); }
+
+  .entry-category {
+    font-size: var(--text-xs); font-weight: var(--font-weight-medium);
+    color: var(--color-warning); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .entry-title { font-size: var(--text-base); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); }
+  .entry-problem { font-size: var(--text-sm); color: var(--color-text-secondary); line-height: var(--leading-relaxed); }
+  .entry-errors { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+  .error-tag {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    padding: 0.1em 0.5em; border-radius: var(--radius-sm);
+    background-color: var(--color-surface-2); color: var(--color-error);
+  }
+</style>

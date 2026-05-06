@@ -1,0 +1,61 @@
+---
+export interface Props {
+  language?: string;
+  filename?: string;
+}
+
+const { language, filename } = Astro.props;
+---
+
+<div class="code-block-wrapper">
+  {filename && (
+    <div class="code-block-header">
+      <span class="code-filename">{filename}</span>
+    </div>
+  )}
+  <pre class={`code-block ${language ? `language-${language}` : ""}`}><code><slot /></code></pre>
+</div>
+
+<style>
+  .code-block-wrapper {
+    margin-block: var(--space-6);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-code-border);
+    overflow: hidden;
+    background-color: var(--color-code-bg);
+  }
+
+  .code-block-header {
+    display: flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-5);
+    background-color: var(--color-surface-2);
+    border-bottom: 1px solid var(--color-code-border);
+  }
+
+  .code-filename {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+  }
+
+  .code-block {
+    padding: var(--space-5) var(--space-6);
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    color: var(--color-text-primary);
+    background-color: var(--color-code-bg);
+    margin: 0;
+  }
+
+  .code-block code {
+    font-family: inherit;
+    font-size: inherit;
+    background: none;
+    padding: 0;
+    border: none;
+    color: inherit;
+  }
+</style>

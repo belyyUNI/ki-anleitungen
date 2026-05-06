@@ -1,0 +1,49 @@
+/* ─── Color Design Tokens ─────────────────────────────── */
+/* "Terminal Pro" Theme — Dark by default, Light via [data-theme="light"] */
+
+:root {
+  /* Surface layers */
+  --color-surface-0: #0a0a0f;
+  --color-surface-1: #111118;
+  --color-surface-2: #1a1a24;
+  --color-surface-3: #24243a;
+
+  /* Text */
+  --color-text-primary: #e8e8ed;
+  --color-text-secondary: #9d9db5;
+  --color-text-tertiary: #5e5e76;
+
+  /* Brand accent — vibrant teal/cyan */
+  --color-accent: #00d4aa;
+  --color-accent-hover: #33dfbb;
+  --color-accent-muted: rgba(0, 212, 170, 0.12);
+
+  /* Semantic colors */
+  --color-success: #00d4aa;
+  --color-warning: #f0c040;
+  --color-error: #ff5555;
+  --color-info: #5ea3ff;
+
+  /* Code blocks */
+  --color-code-bg: #0d0d16;
+  --color-code-border: #1e1e2e;
+}
+
+/* Light mode */
+[data-theme="light"] {
+  --color-surface-0: #fafafc;
+  --color-surface-1: #ffffff;
+  --color-surface-2: #f0f0f5;
+  --color-surface-3: #e0e0ea;
+
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #5a5a72;
+  --color-text-tertiary: #9090a8;
+
+  --color-accent: #008866;
+  --color-accent-hover: #00a87a;
+  --color-accent-muted: rgba(0, 136, 102, 0.1);
+
+  --color-code-bg: #f4f4f8;
+  --color-code-border: #e0e0ea;
+}

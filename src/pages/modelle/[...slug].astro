@@ -1,0 +1,33 @@
+---
+import { getCollection, render } from "astro:content";
+import ContentLayout from "@layouts/ContentLayout.astro";
+import ProseWrapper from "@components/content/ProseWrapper.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("modelle", ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.id.replace(/\.md$/, "") },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const crumbs = [
+  { label: "Modelle", href: "/modelle/" },
+  { label: entry.data.name },
+];
+---
+
+<ContentLayout
+  title={entry.data.name}
+  description={entry.data.description}
+  section="modelle"
+  currentPath={`/modelle/${entry.id.replace(/\.md$/, "")}`}
+  crumbs={crumbs}
+>
+  <ProseWrapper>
+    <Content />
+  </ProseWrapper>
+</ContentLayout>

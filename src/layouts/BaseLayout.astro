@@ -1,0 +1,76 @@
+---
+import "@styles/global.css";
+import { SITE } from "@config/site";
+
+export interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = SITE.tagline,
+  ogImage = "/og-default.png",
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = `${title} | ${SITE.name}`;
+---
+
+<!doctype html>
+<html lang="de" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+
+    <!-- OpenGraph -->
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, SITE.url).href} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="de_DE" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, SITE.url).href} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={new URL(Astro.url.pathname, SITE.url).href} />
+
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Theme script — sets data-theme before first paint, prevents FOUC -->
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = stored || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+
+    <!-- Font preloads -->
+    <link
+      rel="preload"
+      href="/_astro/fonts/inter-var.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Zum Inhalt springen</a>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,184 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@components/shell/Header.astro";
+import Footer from "@components/shell/Footer.astro";
+---
+
+<BaseLayout title="Uber dieses Projekt" description="Informationen uber die KI-Anleitungen, Impressum und Datenschutz.">
+  <Header />
+
+  <main class="page">
+    <div class="hero">
+      <h1>Uber dieses Projekt</h1>
+      <p class="lead">
+        Eine technische Wissensplattform fur den Alltag mit DGX-Servern, Docker, ComfyUI und KI-Modellen.
+      </p>
+    </div>
+
+    <section class="section" aria-labelledby="about-heading">
+      <h2 id="about-heading">Warum gibt es diese Seite?</h2>
+      <p>
+        Diese Plattform dokumentiert das Wissen, das im taglichen Umgang mit einem DGX-Server, Docker-Containern und ComfyUI entsteht. Statt jedes Mal die gleichen Fragen zu googlen oder im Slack-Verlauf zu suchen, gibt es hier strukturierte, praxiserprobte Anleitungen.
+      </p>
+      <p>
+        Alle Inhalte sind Open Source und werden kontinuierlich erweitert. Die Seite richtet sich an deutschsprachige Entwickler, die mit KI-Infrastruktur arbeiten.
+      </p>
+    </section>
+
+    <section class="section" id="impressum" aria-labelledby="impressum-heading">
+      <h2 id="impressum-heading">Impressum</h2>
+
+      <p>Angaben gemaa § 5 TMG:</p>
+
+      <address class="address">
+        <strong>Thomas Heckmann</strong><br />
+        Bielefelder Strase 13a<br />
+        32760 Detmold<br />
+      </address>
+
+      <h3>Kontakt</h3>
+      <p>
+        E-Mail: <a href="mailto:mail@heckmann.one">mail@heckmann.one</a>
+      </p>
+
+      <h3>Verantwortlich fur den Inhalt nach § 55 Abs. 2 RStV</h3>
+      <p>Thomas Heckmann (Anschrift wie oben)</p>
+    </section>
+
+    <section class="section" id="datenschutz" aria-labelledby="datenschutz-heading">
+      <h2 id="datenschutz-heading">Datenschutzerklarung</h2>
+
+      <h3>Allgemeiner Hinweis</h3>
+      <p>
+        Der Schutz Ihrer personenbezogenen Daten ist uns ein wichtiges Anliegen. Diese Seite kommt <strong>ohne Cookies, Tracking oder Analyse-Tools</strong> von Drittanbietern aus.
+      </p>
+
+      <h3>Hosting</h3>
+      <p>
+        Diese Website wird bei <strong>Cloudflare Pages</strong> gehostet. Beim Besuch der Seite werden technisch bedingt Server-Logfiles erstellt (z. B. IP-Adresse, User-Agent, Zeitstempel). Diese Daten werden von Cloudflare im Rahmen des Hosting-Betriebs verarbeitet. Details finden Sie in der <a href="https://www.cloudflare.com/de-de/privacypolicy/" rel="noopener noreferrer">Cloudflare-Datenschutzerklarung</a>.
+      </p>
+
+      <h3>Keine personenbezogenen Daten</h3>
+      <p>
+        Diese Website:
+      </p>
+      <ul>
+        <li>Setzt <strong>keine Cookies</strong></li>
+        <li>Nutzt <strong>kein Tracking</strong> (kein Google Analytics, kein Matomo, nichts)</li>
+        <li>Bindet <strong>keine externen Schriftarten</strong> ein (Fonts sind selbst gehostet)</li>
+        <li>Hat <strong>kein Kontaktformular</strong></li>
+        <li>Speichert <strong>keine Nutzerdaten</strong></li>
+      </ul>
+
+      <h3>Theme-Speicherung</h3>
+      <p>
+        Die Auswahl zwischen hellem und dunklem Design wird im <strong>localStorage</strong> Ihres Browsers gespeichert. Das ist eine rein lokale Einstellung – kein Server erhalt davon Kenntnis.
+      </p>
+
+      <h3>Ihre Rechte</h3>
+      <p>
+        Sie haben das Recht auf Auskunft, Berichtigung, Loschung und Einschrankung der Verarbeitung Ihrer personenbezogenen Daten. Da diese Website keine personenbezogenen Daten erhebt, durfte eine Anfrage jedoch ins Leere laufen.
+      </p>
+      <p>
+        Bei Fragen zum Datenschutz kontaktieren Sie uns bitte per E-Mail an <a href="mailto:mail@heckmann.one">mail@heckmann.one</a>.
+      </p>
+    </section>
+
+    <section class="section" id="lizenz" aria-labelledby="lizenz-heading">
+      <h2 id="lizenz-heading">Lizenz</h2>
+      <p>
+        Alle Inhalte dieser Website sind, sofern nicht anders angegeben, unter der
+        <a href="https://creativecommons.org/licenses/by/4.0/deed.de" rel="noopener noreferrer">Creative Commons Attribution 4.0 International (CC BY 4.0)</a>
+        Lizenz verfugbar.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6) var(--space-24);
+  }
+
+  .hero {
+    margin-block-end: var(--space-16);
+  }
+
+  h1 {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+    margin-block-end: var(--space-4);
+  }
+
+  .lead {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .section {
+    margin-block-end: var(--space-16);
+  }
+
+  .section h2 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    padding-block-end: var(--space-3);
+    border-bottom: 1px solid var(--color-surface-3);
+    margin-block-end: var(--space-6);
+  }
+
+  .section h3 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-block: var(--space-4) var(--space-2);
+  }
+
+  .section p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-block-end: var(--space-3);
+  }
+
+  .section ul {
+    list-style: disc;
+    padding-inline-start: var(--space-5);
+    margin-block-end: var(--space-4);
+  }
+
+  .section li {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-block-end: var(--space-1);
+  }
+
+  .section a {
+    color: var(--color-accent);
+    text-underline-offset: 2px;
+  }
+
+  .section a:hover {
+    text-decoration: none;
+  }
+
+  .address {
+    font-style: normal;
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-block: var(--space-4);
+    padding: var(--space-4);
+    background-color: var(--color-surface-1);
+    border-radius: var(--radius-md);
+  }
+</style>

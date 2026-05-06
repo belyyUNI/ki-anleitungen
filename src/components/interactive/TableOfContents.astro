@@ -1,0 +1,140 @@
+---
+export interface Props {
+  selectors?: string;
+  minDepth?: number;
+  maxDepth?: number;
+}
+
+const {
+  selectors = "h2, h3",
+} = Astro.props;
+---
+
+<toc-spy data-selectors={selectors}>
+  <nav class="toc-nav" aria-label="Inhaltsverzeichnis">
+    <span class="toc-label">Auf dieser Seite</span>
+    <ul class="toc-list" id="toc-list">
+      <!-- Populated by JS -->
+    </ul>
+  </nav>
+</toc-spy>
+
+<style>
+  .toc-nav {
+    font-size: var(--text-sm);
+  }
+
+  .toc-label {
+    display: block;
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-tertiary);
+    margin-block-end: var(--space-3);
+    padding-inline-start: var(--space-3);
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .toc-list a {
+    display: block;
+    padding: var(--space-1) var(--space-3);
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-md);
+    border-left: 2px solid transparent;
+    transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+    text-decoration: none;
+  }
+
+  .toc-list a:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-2);
+  }
+
+  .toc-list a.is-visible {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+  }
+
+  .toc-list .toc-h3 {
+    padding-inline-start: var(--space-7);
+    font-size: var(--text-xs);
+  }
+</style>
+
+<script>
+  class TocSpy extends HTMLElement {
+    private headings: Element[] = [];
+    private links: HTMLAnchorElement[] = [];
+
+    connectedCallback() {
+      const selectors = this.dataset.selectors ?? "h2, h3";
+      const contentArea = document.querySelector(".content-main");
+      if (!contentArea) return;
+
+      this.headings = Array.from(contentArea.querySelectorAll(selectors));
+      if (this.headings.length < 2) {
+        this.style.display = "none";
+        return;
+      }
+
+      this.buildList();
+      this.observe();
+    }
+
+    private buildList() {
+      const list = this.querySelector("#toc-list");
+      if (!list) return;
+
+      this.headings.forEach((heading) => {
+        const id = heading.id;
+        if (!id) return;
+
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = `#${id}`;
+        a.textContent = heading.textContent;
+        if (heading.tagName === "H3") {
+          a.classList.add("toc-h3");
+        }
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          heading.scrollIntoView({ behavior: "smooth" });
+          history.pushState(null, "", `#${id}`);
+        });
+        li.appendChild(a);
+        list.appendChild(li);
+        this.links.push(a);
+      });
+    }
+
+    private observe() {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const id = entry.target.id;
+            const link = this.links.find((l) => l.getAttribute("href") === `#${id}`);
+            if (link) {
+              link.classList.toggle("is-visible", entry.isIntersecting);
+            }
+          });
+        },
+        {
+          rootMargin: "-80px 0px -60% 0px",
+          threshold: 0,
+        },
+      );
+
+      this.headings.forEach((h) => observer.observe(h));
+    }
+  }
+
+  customElements.define("toc-spy", TocSpy);
+</script>

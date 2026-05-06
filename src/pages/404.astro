@@ -1,0 +1,66 @@
+---
+import LandingLayout from "@layouts/LandingLayout.astro";
+import Button from "@components/ui/Button.astro";
+---
+
+<LandingLayout title="Seite nicht gefunden" noindex>
+  <section class="not-found">
+    <div class="not-found-inner">
+      <span class="not-found-code">404</span>
+      <h1 class="not-found-heading">Seite nicht gefunden</h1>
+      <p class="not-found-desc">
+        Die angeforderte Seite existiert nicht. Vielleicht hilft eine der folgenden Seiten weiter.
+      </p>
+      <div class="not-found-links">
+        <Button href="/" variant="primary">Zur Startseite</Button>
+        <Button href="/guides/" variant="secondary">Alle Anleitungen</Button>
+        <Button href="/troubleshooting/" variant="secondary">Troubleshooting</Button>
+      </div>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .not-found {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-16) var(--space-6);
+  }
+
+  .not-found-inner {
+    text-align: center;
+    max-width: 480px;
+  }
+
+  .not-found-code {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-6xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+    margin-block-end: var(--space-4);
+  }
+
+  .not-found-heading {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-block-end: var(--space-4);
+  }
+
+  .not-found-desc {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    margin-block-end: var(--space-8);
+    line-height: var(--leading-relaxed);
+  }
+
+  .not-found-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+</style>

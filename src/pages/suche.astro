@@ -1,0 +1,115 @@
+---
+import LandingLayout from "@layouts/LandingLayout.astro";
+---
+
+<LandingLayout
+  title="Suche"
+  description="Durchsuche alle Anleitungen, Modelle, Workflows und Troubleshooting-Eintrage."
+>
+  <section class="search-page">
+    <div class="search-inner">
+      <h1 class="search-heading">Suche</h1>
+      <p class="search-lead">
+        Durchsuche die gesamte Wissensbasis nach Stichworten, Fehlermeldungen oder Themen.
+      </p>
+
+      <div id="search"></div>
+
+      <noscript>
+        <p class="no-js-hint">
+          Die Suche benotigt JavaScript. Du kannst alternativ die
+          <a href="/guides/">Anleitungen</a>,
+          <a href="/modelle/">Modelle</a> oder
+          <a href="/troubleshooting/">Troubleshooting</a>-Seiten durchsuchen.
+        </p>
+      </noscript>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .search-page {
+    padding-block: var(--space-12) var(--space-20);
+  }
+
+  .search-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+  }
+
+  .search-heading {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+    margin-block-end: var(--space-4);
+  }
+
+  .search-lead {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    max-width: 48ch;
+    margin-block-end: var(--space-12);
+    line-height: var(--leading-relaxed);
+  }
+
+  .no-js-hint {
+    padding: var(--space-6);
+    background: var(--color-surface-1);
+    border: 1px solid var(--color-surface-3);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .no-js-hint a {
+    color: var(--color-accent);
+    font-weight: var(--font-weight-medium);
+  }
+
+</style>
+
+<style is:global>
+  #search {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: var(--color-accent);
+    --pagefind-ui-text: var(--color-text-primary);
+    --pagefind-ui-background: var(--color-surface-1);
+    --pagefind-ui-border: var(--color-surface-3);
+    --pagefind-ui-border-radius: var(--radius-lg);
+    --pagefind-ui-font: var(--font-sans);
+  }
+</style>
+
+<script is:inline>
+  async function loadSearch() {
+    const searchEl = document.getElementById("search");
+    if (!searchEl) return;
+
+    try {
+      const script = document.createElement("script");
+      script.src = "/pagefind/pagefind-ui.js";
+      await new Promise((resolve, reject) => {
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+
+      const pagefind = window.PagefindUI;
+      if (pagefind) {
+        new pagefind({
+          element: "#search",
+          showSubResults: true,
+          showImages: false,
+          autofocus: true,
+        });
+      }
+    } catch {
+      searchEl.innerHTML =
+        '<p class="no-js-hint">Suche noch nicht verfugbar. Bitte spater erneut versuchen.</p>';
+    }
+  }
+
+  loadSearch();
+</script>

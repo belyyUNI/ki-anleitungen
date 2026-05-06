@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from "astro:content";
+import ContentLayout from "@layouts/ContentLayout.astro";
+import ProseWrapper from "@components/content/ProseWrapper.astro";
+
+export async function getStaticPaths() {
+  const guides = await getCollection("guides", ({ data }) => !data.draft);
+  return guides.map((entry) => ({
+    params: { slug: entry.id.replace(/\.md$/, "") },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const topicLabel = entry.data.topic === "ssh" ? "SSH" : entry.data.topic === "dgx" ? "DGX" : entry.data.topic.charAt(0).toUpperCase() + entry.data.topic.slice(1);
+
+const crumbs = [
+  { label: "Anleitungen", href: "/guides/" },
+  { label: topicLabel, href: `/guides/${entry.data.topic}/` },
+  { label: entry.data.title },
+];
+---
+
+<ContentLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  section="guides"
+  currentPath={`/guides/${entry.id.replace(/\.md$/, "")}`}
+  crumbs={crumbs}
+>
+  <ProseWrapper>
+    <Content />
+  </ProseWrapper>
+</ContentLayout>

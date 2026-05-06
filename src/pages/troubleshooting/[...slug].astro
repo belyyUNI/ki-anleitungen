@@ -1,0 +1,41 @@
+---
+import { getCollection, render } from "astro:content";
+import ContentLayout from "@layouts/ContentLayout.astro";
+import ProseWrapper from "@components/content/ProseWrapper.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("troubleshooting", ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.id.replace(/\.md$/, "") },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const catMap: Record<string, string> = {
+  gpu: "GPU & CUDA", docker: "Docker", comfyui: "ComfyUI",
+  modelle: "Modelle", dgx: "DGX", cuda: "CUDA",
+  netzwerk: "Netzwerk", speicher: "Speicher", ssh: "SSH", python: "Python",
+};
+const catLabel = catMap[entry.data.category] ?? entry.data.category;
+
+const crumbs = [
+  { label: "Troubleshooting", href: "/troubleshooting/" },
+  { label: catLabel, href: `/troubleshooting/${entry.data.category}/` },
+  { label: entry.data.title },
+];
+---
+
+<ContentLayout
+  title={entry.data.title}
+  description={entry.data.problem}
+  section="troubleshooting"
+  currentPath={`/troubleshooting/${entry.id.replace(/\.md$/, "")}`}
+  crumbs={crumbs}
+>
+  <ProseWrapper>
+    <Content />
+  </ProseWrapper>
+</ContentLayout>

@@ -1,0 +1,155 @@
+---
+import { SITE, NAVIGATION } from "@config/site";
+---
+
+<footer class="global-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">
+          <span class="logo-icon" aria-hidden="true">&gt;_</span>
+          {SITE.name}
+        </a>
+        <p class="footer-tagline">{SITE.tagline}</p>
+      </div>
+
+      <div class="footer-links">
+        <h4 class="footer-heading">Anleitungen</h4>
+        <ul>
+          {
+            NAVIGATION.footer.guides.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4 class="footer-heading">Modelle</h4>
+        <ul>
+          {
+            NAVIGATION.footer.models.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4 class="footer-heading">Rechtliches</h4>
+        <ul>
+          {
+            NAVIGATION.footer.legal.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {new Date().getFullYear()} {SITE.name}. Alle Inhalte unter offener Lizenz.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .global-footer {
+    border-top: 1px solid var(--color-surface-3);
+    background-color: var(--color-surface-1);
+    margin-block-start: var(--space-32);
+  }
+
+  .footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-16) var(--space-6) var(--space-8);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-10);
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+    }
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 768px) {
+    .footer-brand {
+      grid-column: auto;
+    }
+  }
+
+  .footer-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-lg);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+    margin-block-end: var(--space-2);
+  }
+
+  .logo-icon {
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+  }
+
+  .footer-tagline {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    max-width: 28ch;
+  }
+
+  .footer-heading {
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-tertiary);
+    margin-block-end: var(--space-3);
+  }
+
+  .footer-links ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .footer-links a {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    transition: color 150ms ease;
+  }
+
+  .footer-links a:hover {
+    color: var(--color-accent);
+  }
+
+  .footer-bottom {
+    margin-block-start: var(--space-12);
+    padding-block-start: var(--space-6);
+    border-top: 1px solid var(--color-surface-3);
+  }
+
+  .footer-bottom p {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+  }
+</style>

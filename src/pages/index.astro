@@ -1,0 +1,271 @@
+---
+import { getCollection } from "astro:content";
+import LandingLayout from "@layouts/LandingLayout.astro";
+import HeroSection from "@components/content/HeroSection.astro";
+import FeatureList from "@components/content/FeatureList.astro";
+import ContentPreview from "@components/content/ContentPreview.astro";
+import type { GuideInfo } from "@components/content/GuideCard.astro";
+
+const allGuides = await getCollection("guides", ({ data }) => !data.draft);
+const allTroubleshooting = await getCollection("troubleshooting", ({ data }) => !data.draft);
+const allModels = await getCollection("modelle", ({ data }) => !data.draft);
+
+const guideCount = allGuides.length;
+const modelCount = allModels.length;
+const troubleshootingCount = allTroubleshooting.length;
+
+const topicLabels: Record<string, string> = {
+  ssh: "SSH", docker: "Docker", comfyui: "ComfyUI", dgx: "DGX", gpu: "GPU",
+  modelle: "Modelle", workflows: "Workflows", allgemein: "Allgemein",
+};
+
+const featuredGuides: GuideInfo[] = allGuides
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 6)
+  .map((g) => ({
+    title: g.data.title,
+    description: g.data.description,
+    difficulty: g.data.difficulty,
+    topic: topicLabels[g.data.topic] ?? g.data.topic,
+    readingTime: g.data.readingTimeMinutes ?? 5,
+    href: `/guides/${g.id.replace(/\.md$/, "")}`,
+  }));
+
+const troubleshootingGuides: GuideInfo[] = allTroubleshooting
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 3)
+  .map((t) => ({
+    title: t.data.title,
+    description: t.data.problem,
+    difficulty: t.data.difficulty,
+    topic: t.data.category,
+    readingTime: 5,
+    href: `/troubleshooting/${t.id.replace(/\.md$/, "")}`,
+  }));
+---
+
+<LandingLayout
+  title="Startseite"
+  description="Zentrale Wissensbasis fur DGX-Server, Docker, ComfyUI und KI-Modelle. Praxiserprobte Anleitungen, Workflows und Troubleshooting auf Deutsch."
+>
+  <HeroSection guideCount={guideCount} modelCount={modelCount} troubleshootingCount={troubleshootingCount} />
+
+  <FeatureList />
+
+  <ContentPreview
+    title="Neueste Anleitungen"
+    description="Praxiserprobte Schritt-fur-Schritt-Anleitungen fur deine KI-Infrastruktur."
+    guides={featuredGuides}
+    moreHref="/guides/"
+    moreLabel="Alle Anleitungen"
+  />
+
+  <section class="troubleshooting-preview" aria-labelledby="troubleshooting-heading">
+    <div class="troubleshooting-inner">
+      <div class="troubleshooting-header">
+        <div>
+          <h2 id="troubleshooting-heading" class="troubleshooting-heading">
+            Haufige Probleme &amp; Losungen
+          </h2>
+          <p class="troubleshooting-desc">
+            Schnelle Hilfe bei den haufigsten Fehlern &mdash; mit genauen Fehlermeldungen zum direkten Finden.
+          </p>
+        </div>
+        <a href="/troubleshooting/" class="troubleshooting-all">
+          Zum Troubleshooting
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="troubleshooting-grid">
+        {
+          troubleshootingGuides.map((guide) => (
+            <a href={guide.href} class="troubleshooting-card">
+              <span class="troubleshooting-topic">{guide.topic}</span>
+              <h3 class="troubleshooting-title">{guide.title}</h3>
+              <p class="troubleshooting-desc-card">{guide.description}</p>
+              <span class="troubleshooting-time">{guide.readingTime} min</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" aria-labelledby="cta-heading">
+    <div class="cta-inner">
+      <h2 id="cta-heading" class="cta-heading">Bereit zum Durchstarten?</h2>
+      <p class="cta-desc">
+        Alle Inhalte sind Open Source und werden kontinuierlich erweitert. Trage gerne eigene Anleitungen bei.
+      </p>
+      <a href="/guides/" class="cta-button">
+        Jetzt loslegen
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .troubleshooting-preview {
+    padding-block: var(--space-16);
+  }
+
+  .troubleshooting-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+  }
+
+  .troubleshooting-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-6);
+    margin-block-end: var(--space-10);
+  }
+
+  .troubleshooting-heading {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+  }
+
+  .troubleshooting-desc {
+    margin-block-start: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    max-width: 48ch;
+  }
+
+  .troubleshooting-all {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    white-space: nowrap;
+    transition: color 150ms ease, background-color 150ms ease;
+  }
+
+  .troubleshooting-all:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-2);
+  }
+
+  .troubleshooting-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 640px) {
+    .troubleshooting-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .troubleshooting-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .troubleshooting-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background-color: var(--color-surface-1);
+    border: 1px solid var(--color-surface-3);
+    border-left: 3px solid var(--color-warning);
+    border-radius: var(--radius-lg);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .troubleshooting-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .troubleshooting-topic {
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-warning);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .troubleshooting-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+  }
+
+  .troubleshooting-desc-card {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    flex: 1;
+  }
+
+  .troubleshooting-time {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+  }
+
+  /* CTA Section */
+  .cta-section {
+    padding-block: var(--space-24);
+  }
+
+  .cta-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: var(--space-16) var(--space-8);
+    text-align: center;
+    background-color: var(--color-surface-1);
+    border: 1px solid var(--color-surface-3);
+    border-radius: var(--radius-2xl);
+  }
+
+  .cta-heading {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+    margin-block-end: var(--space-4);
+  }
+
+  .cta-desc {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    max-width: 44ch;
+    margin: 0 auto var(--space-8);
+    line-height: var(--leading-relaxed);
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-8);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    color: #0a0a0f;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-lg);
+    transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+    box-shadow: var(--shadow-button);
+  }
+
+  .cta-button:hover {
+    background-color: var(--color-accent-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
+  }
+</style>

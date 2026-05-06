@@ -1,0 +1,186 @@
+---
+import LandingLayout from "@layouts/LandingLayout.astro";
+import { getCollection } from "astro:content";
+
+const allWorkflows = await getCollection("workflows", ({ data }) => !data.draft);
+
+const categoryLabels: Record<string, string> = {
+  txt2img: "txt2img - Text zu Bild",
+  img2img: "img2img - Bild zu Bild",
+  inpainting: "Inpainting",
+  controlnet: "ControlNet",
+  upscaling: "Upscaling",
+  video: "Video-Generierung",
+  other: "Weitere Workflows",
+};
+
+const categoryDescriptions: Record<string, string> = {
+  txt2img: "Klassische Text-zu-Bild-Workflows fur SDXL und andere Checkpoints.",
+  img2img: "Workflows zur Bildverfeinerung, Stil-Transfer und Variationen.",
+  inpainting: "Gezielte Bildbearbeitung - Bereiche maskieren und neu generieren.",
+  controlnet: "Workflows mit ControlNet-Kontrolle fur Pose, Tiefe und Struktur.",
+  upscaling: "Bilder auf hohere Auflosungen skalieren ohne Qualitatsverlust.",
+  video: "Bildsequenzen zu MP4-Videos zusammensetzen.",
+  other: "Spezielle und experimentelle Workflows.",
+};
+
+export function getStaticPaths() {
+  const categories = ["txt2img", "img2img", "inpainting", "controlnet", "upscaling", "video", "other"];
+  return categories.map((category) => ({ params: { category } }));
+}
+
+const { category } = Astro.params;
+const label = categoryLabels[category] ?? category;
+const description = categoryDescriptions[category] ?? "";
+
+const entries = allWorkflows
+  .filter((w) => w.data.category === category)
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+
+<LandingLayout
+  title={`${label} - Workflows`}
+  description={`${label}: ${description} ${entries.length} Workflows verfugbar.`}
+>
+  <div class="page">
+    <div class="hero">
+      <a href="/workflows/" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Alle Workflows
+      </a>
+      <h1>{label}</h1>
+      <p class="lead">{description}</p>
+    </div>
+
+    {
+      entries.length > 0 ? (
+        <div class="grid">
+          {entries.map((w) => (
+            <a href={`/workflows/${w.id.replace(/\.md$/, "")}`} class="card">
+              <span class="card-category">{label}</span>
+              <h2 class="card-title">{w.data.title}</h2>
+              <p class="card-desc">{w.data.description.length > 120 ? w.data.description.slice(0, 120) + "..." : w.data.description}</p>
+              {w.data.requiredNodes.length > 0 && (
+                <span class="card-meta">{w.data.requiredNodes.length} Custom Nodes</span>
+              )}
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="empty">
+          <p>Noch keine Workflows in dieser Kategorie dokumentiert.</p>
+          <a href="/workflows/">Zuruck zur Ubersicht</a>
+        </div>
+      )
+    }
+  </div>
+</LandingLayout>
+
+<style>
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6) var(--space-24);
+  }
+
+  .hero {
+    margin-block-end: var(--space-12);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-block-end: var(--space-4);
+    transition: color 150ms ease;
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+    margin-block-end: var(--space-2);
+  }
+
+  .lead {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 640px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background-color: var(--color-surface-1);
+    border: 1px solid var(--color-surface-3);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-lg);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .card-category {
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .card-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+  }
+
+  .card-desc {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    flex: 1;
+  }
+
+  .card-meta {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+  }
+
+  .empty {
+    text-align: center;
+    padding: var(--space-16) var(--space-8);
+    color: var(--color-text-secondary);
+  }
+
+  .empty a {
+    color: var(--color-accent);
+    font-weight: var(--font-weight-medium);
+  }
+</style>

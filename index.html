@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KI Docs — Technische Wissensbasis</title>
+  <meta name="description" content="Strukturierte technische Dokumentation für DGX-Server, Docker, ComfyUI, GPU-Infrastruktur und mehr.">
+  <style>
+    /* ─── Apple Design Tokens ─────────────────────────────── */
+    :root {
+      --c-primary:       #0066cc;
+      --c-primary-focus: #0071e3;
+      --c-primary-dark:  #2997ff;
+      --c-ink:           #1d1d1f;
+      --c-ink-80:        #333333;
+      --c-ink-48:        #7a7a7a;
+      --c-muted:         #cccccc;
+      --c-divider:       #f0f0f0;
+      --c-hairline:      #e0e0e0;
+      --c-canvas:        #ffffff;
+      --c-parchment:     #f5f5f7;
+      --c-pearl:         #fafafc;
+      --c-tile-1:        #272729;
+      --c-tile-2:        #2a2a2c;
+      --c-tile-3:        #252527;
+      --c-black:         #000000;
+      --c-on-dark:       #ffffff;
+
+      --f-display: "SF Pro Display", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      --f-text:    "SF Pro Text",    system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+
+      --sp-xs:  8px;
+      --sp-sm:  12px;
+      --sp-md:  17px;
+      --sp-lg:  24px;
+      --sp-xl:  32px;
+      --sp-xxl: 48px;
+      --sp-sec: 80px;
+    }
+
+    /* ─── Reset ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font: inherit; }
+
+    body {
+      font-family: var(--f-text);
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.47;
+      letter-spacing: -0.374px;
+      color: var(--c-ink);
+      background: var(--c-canvas);
+      overflow-x: hidden;
+    }
+
+    /* ─── Global Nav ──────────────────────────────────────── */
+    .global-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 44px;
+      background: var(--c-black);
+    }
+    .global-nav__inner {
+      max-width: 1068px;
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .global-nav__logo {
+      font-family: var(--f-display);
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.28px;
+      color: var(--c-on-dark);
+    }
+    .global-nav__links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      list-style: none;
+    }
+    .global-nav__links a {
+      font-family: var(--f-text);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.12px;
+      color: var(--c-on-dark);
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .global-nav__links a:hover { opacity: 1; }
+    .global-nav__search {
+      color: var(--c-on-dark);
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      transition: opacity 0.2s;
+    }
+    .global-nav__search:hover { opacity: 1; }
+
+    /* ─── Buttons ─────────────────────────────────────────── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      background: var(--c-primary);
+      color: #fff;
+      font-family: var(--f-text);
+      font-size: 17px;
+      font-weight: 400;
+      letter-spacing: -0.374px;
+      line-height: 1;
+      padding: 11px 22px;
+      border-radius: 9999px;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-primary:active { transform: scale(0.95); }
+    .btn-primary:focus-visible { outline: 2px solid var(--c-primary-focus); outline-offset: 3px; }
+
+    .btn-ghost-dark {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      color: var(--c-primary-dark);
+      font-family: var(--f-text);
+      font-size: 17px;
+      font-weight: 400;
+      letter-spacing: -0.374px;
+      line-height: 1;
+      padding: 10px 22px;
+      border-radius: 9999px;
+      border: 1px solid rgba(41,151,255,0.4);
+      transition: border-color 0.2s, transform 0.1s;
+    }
+    .btn-ghost-dark:hover { border-color: var(--c-primary-dark); }
+    .btn-ghost-dark:active { transform: scale(0.95); }
+
+    .btn-ghost-light {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      color: var(--c-primary);
+      font-family: var(--f-text);
+      font-size: 17px;
+      font-weight: 400;
+      letter-spacing: -0.374px;
+      line-height: 1;
+      padding: 10px 22px;
+      border-radius: 9999px;
+      border: 1px solid var(--c-primary);
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-ghost-light:hover { opacity: 0.8; }
+    .btn-ghost-light:active { transform: scale(0.95); }
+
+    /* ─── Section base ────────────────────────────────────── */
+    .section { padding: var(--sp-sec) var(--sp-lg); }
+    .section__inner { max-width: 1068px; margin: 0 auto; }
+
+    .section__eyebrow {
+      font-family: var(--f-text);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--c-primary);
+      margin-bottom: var(--sp-md);
+    }
+    .section__headline {
+      font-family: var(--f-display);
+      font-size: clamp(34px, 4.2vw, 48px);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.28px;
+      margin-bottom: var(--sp-lg);
+    }
+    .section__subhead {
+      font-family: var(--f-display);
+      font-size: clamp(19px, 2.2vw, 24px);
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0;
+      color: var(--c-ink-48);
+      max-width: 640px;
+    }
+
+    /* Tile variants */
+    .tile-light   { background: var(--c-canvas);    color: var(--c-ink); }
+    .tile-parch   { background: var(--c-parchment); color: var(--c-ink); }
+    .tile-dark    { background: var(--c-tile-1);    color: var(--c-on-dark); }
+    .tile-dark    .section__eyebrow { color: var(--c-primary-dark); }
+    .tile-dark    .section__subhead { color: var(--c-muted); }
+    .tile-dark-2  { background: var(--c-tile-2);    color: var(--c-on-dark); }
+    .tile-dark-2  .section__eyebrow { color: var(--c-primary-dark); }
+    .tile-dark-2  .section__subhead { color: var(--c-muted); }
+    .tile-dark-3  { background: var(--c-tile-3);    color: var(--c-on-dark); }
+    .tile-dark-3  .section__eyebrow { color: var(--c-primary-dark); }
+    .tile-dark-3  .section__subhead { color: var(--c-muted); }
+
+    /* ─── Hero ────────────────────────────────────────────── */
+    .hero {
+      background: var(--c-tile-1);
+      padding: 108px var(--sp-lg) var(--sp-sec);
+      text-align: center;
+      color: var(--c-on-dark);
+    }
+    .hero__eyebrow {
+      font-family: var(--f-text);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--c-primary-dark);
+      margin-bottom: var(--sp-lg);
+    }
+    .hero__headline {
+      font-family: var(--f-display);
+      font-size: clamp(52px, 7.5vw, 88px);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.028em;
+      color: var(--c-on-dark);
+      margin: 0 auto var(--sp-xl);
+      max-width: 860px;
+    }
+    .hero__tagline {
+      font-family: var(--f-display);
+      font-size: clamp(19px, 2.4vw, 26px);
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: 0.196px;
+      color: var(--c-muted);
+      max-width: 560px;
+      margin: 0 auto var(--sp-xxl);
+    }
+    .hero__actions {
+      display: flex;
+      gap: var(--sp-md);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ─── Platform pillars ────────────────────────────────── */
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: var(--sp-xxl);
+      border-top: 1px solid var(--c-hairline);
+    }
+    .pillar {
+      padding: var(--sp-xl) var(--sp-xl) var(--sp-xl) 0;
+      border-right: 1px solid var(--c-hairline);
+    }
+    .pillar:last-child { border-right: none; padding-right: 0; }
+    .pillar + .pillar { padding-left: var(--sp-xl); }
+    .pillar__name {
+      font-family: var(--f-display);
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: 0.231px;
+      color: var(--c-ink);
+      margin-bottom: var(--sp-xs);
+    }
+    .pillar__body {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.43;
+      letter-spacing: -0.224px;
+      color: var(--c-ink-48);
+    }
+
+    /* ─── Stats bar ───────────────────────────────────────── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--c-hairline);
+      border-bottom: 1px solid var(--c-hairline);
+    }
+    .stat {
+      padding: var(--sp-xxl) var(--sp-lg);
+      text-align: center;
+      border-right: 1px solid var(--c-hairline);
+    }
+    .stat:last-child { border-right: none; }
+    .stat__value {
+      font-family: var(--f-display);
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -0.374px;
+      line-height: 1.1;
+      color: var(--c-ink);
+    }
+    .stat__label {
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: -0.224px;
+      color: var(--c-ink-48);
+      margin-top: var(--sp-xs);
+    }
+
+    /* ─── Category grid ───────────────────────────────────── */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: var(--sp-xxl);
+      background: var(--c-hairline);
+      border: 2px solid var(--c-hairline);
+    }
+    .cat-card {
+      background: var(--c-canvas);
+      padding: var(--sp-xl) var(--sp-lg) var(--sp-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-md);
+      cursor: default;
+      transition: background 0.2s;
+    }
+    .cat-card:hover { background: var(--c-parchment); }
+    .cat-card__icon {
+      width: 40px;
+      height: 40px;
+      color: var(--c-ink);
+      flex-shrink: 0;
+    }
+    .cat-card__name {
+      font-family: var(--f-display);
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: 0.231px;
+      color: var(--c-ink);
+    }
+    .cat-card__desc {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.43;
+      letter-spacing: -0.224px;
+      color: var(--c-ink-48);
+      flex: 1;
+    }
+    .cat-card__cta {
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: -0.224px;
+      color: var(--c-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .cat-card__cta-arrow {
+      display: inline-block;
+      transition: transform 0.2s;
+    }
+    .cat-card:hover .cat-card__cta-arrow { transform: translateX(4px); }
+
+    /* ─── Featured / Quickstart ───────────────────────────── */
+    .featured-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-xxl);
+      align-items: start;
+      margin-top: var(--sp-xxl);
+    }
+    .step-list { display: flex; flex-direction: column; gap: var(--sp-md); }
+    .step {
+      display: flex;
+      gap: var(--sp-lg);
+      align-items: flex-start;
+      padding: var(--sp-lg) var(--sp-xl);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .step__num {
+      font-family: var(--f-display);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--c-primary-dark);
+      width: 24px;
+      flex-shrink: 0;
+      padding-top: 3px;
+    }
+    .step__title {
+      font-family: var(--f-text);
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.374px;
+      color: var(--c-on-dark);
+      margin-bottom: 4px;
+    }
+    .step__desc {
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: -0.224px;
+      color: var(--c-muted);
+      line-height: 1.43;
+    }
+
+    /* ─── Content format cards ────────────────────────────── */
+    .formats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-lg);
+      margin-top: var(--sp-xxl);
+    }
+    .format-card {
+      background: var(--c-canvas);
+      border: 1px solid var(--c-hairline);
+      border-radius: 18px;
+      padding: var(--sp-xl) var(--sp-lg);
+      transition: transform 0.2s;
+    }
+    .format-card:hover { transform: translateY(-3px); }
+    .format-card__icon {
+      width: 40px;
+      height: 40px;
+      color: var(--c-primary);
+      margin-bottom: var(--sp-lg);
+    }
+    .format-card__title {
+      font-family: var(--f-display);
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: 0.231px;
+      margin-bottom: var(--sp-xs);
+    }
+    .format-card__body {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.43;
+      letter-spacing: -0.224px;
+      color: var(--c-ink-48);
+    }
+
+    /* ─── Philosophy ──────────────────────────────────────── */
+    .philosophy {
+      text-align: center;
+    }
+    .philosophy__quote {
+      font-family: var(--f-display);
+      font-size: clamp(28px, 3.8vw, 40px);
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.374px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .philosophy__body {
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.47;
+      letter-spacing: -0.374px;
+      color: var(--c-ink-48);
+      max-width: 520px;
+      margin: var(--sp-xxl) auto 0;
+    }
+
+    /* ─── CTA ─────────────────────────────────────────────── */
+    .cta { text-align: center; }
+    .cta .section__headline {
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta .section__subhead {
+      margin: 0 auto var(--sp-xxl);
+      text-align: center;
+    }
+    .cta__actions {
+      display: flex;
+      gap: var(--sp-md);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ─── Footer ──────────────────────────────────────────── */
+    .footer {
+      background: var(--c-parchment);
+      padding: 64px var(--sp-lg) var(--sp-xl);
+    }
+    .footer__inner { max-width: 1068px; margin: 0 auto; }
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+      gap: var(--sp-xl);
+      margin-bottom: var(--sp-xxl);
+    }
+    .footer__brand-name {
+      font-family: var(--f-display);
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.28px;
+      color: var(--c-ink);
+      margin-bottom: var(--sp-xs);
+    }
+    .footer__brand-desc {
+      font-size: 12px;
+      color: var(--c-ink-48);
+      line-height: 1.5;
+      letter-spacing: -0.12px;
+    }
+    .footer__col-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.224px;
+      color: var(--c-ink);
+      margin-bottom: var(--sp-md);
+    }
+    .footer__links { list-style: none; }
+    .footer__links a {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.12px;
+      color: var(--c-ink-48);
+      line-height: 2.41;
+      transition: color 0.2s;
+    }
+    .footer__links a:hover { color: var(--c-ink); }
+    .footer__legal {
+      padding-top: var(--sp-lg);
+      border-top: 1px solid var(--c-hairline);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.12px;
+      color: var(--c-ink-48);
+    }
+
+    /* ─── Fade-up animation ───────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up { transition: none; opacity: 1; transform: none; }
+    }
+
+    /* ─── Responsive ──────────────────────────────────────── */
+    @media (max-width: 1068px) {
+      .pillars { grid-template-columns: 1fr; }
+      .pillar { border-right: none; border-bottom: 1px solid var(--c-hairline); padding: var(--sp-xl) 0; }
+      .pillar + .pillar { padding-left: 0; }
+      .pillar:last-child { border-bottom: none; }
+      .categories-grid { grid-template-columns: repeat(2, 1fr); }
+      .featured-layout { grid-template-columns: 1fr; }
+      .formats-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .footer__grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .hero { padding: 72px var(--sp-lg) var(--sp-sec); }
+      .categories-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+      .footer__grid { grid-template-columns: 1fr; }
+      .global-nav__links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Global Nav ──────────────────────────────────────── -->
+  <nav class="global-nav" role="navigation" aria-label="Hauptnavigation">
+    <div class="global-nav__inner">
+      <a href="/" class="global-nav__logo" aria-label="KI Docs – Startseite">KI Docs</a>
+      <ul class="global-nav__links" role="list">
+        <li><a href="#plattform">Übersicht</a></li>
+        <li><a href="#kategorien">Bereiche</a></li>
+        <li><a href="#schnellstart">Schnellstart</a></li>
+        <li><a href="#formate">Formate</a></li>
+      </ul>
+      <a href="#kategorien" class="global-nav__search" aria-label="Suche öffnen">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-h1">
+    <p class="hero__eyebrow fade-up">Technische Wissensbasis · KI-Infrastruktur</p>
+    <h1 id="hero-h1" class="hero__headline fade-up">Wissen, das trägt.</h1>
+    <p class="hero__tagline fade-up">
+      Server. Container. Modelle. Workflows.<br>
+      Strukturiert dokumentiert — jederzeit nachschlagbar.
+    </p>
+    <div class="hero__actions fade-up">
+      <a href="#kategorien" class="btn-primary">Alle Bereiche erkunden</a>
+      <a href="#schnellstart" class="btn-ghost-dark">Schnellstart</a>
+    </div>
+  </section>
+
+  <!-- ── Platform Statement ─────────────────────────────────── -->
+  <section class="section tile-light" id="plattform" aria-labelledby="plattform-h2">
+    <div class="section__inner">
+      <p class="section__eyebrow fade-up">Die Plattform</p>
+      <h2 id="plattform-h2" class="section__headline fade-up">
+        Eine Wissensbasis.<br>Klar strukturiert.
+      </h2>
+      <p class="section__subhead fade-up">
+        Von der ersten GPU-Konfiguration bis zum fertigen ComfyUI-Workflow —
+        diese Plattform sammelt technisches Wissen und macht es systematisch
+        nachschlagbar. Alles an einem Ort.
+      </p>
+      <div class="pillars fade-up" role="list">
+        <div class="pillar" role="listitem">
+          <p class="pillar__name">Strukturiert</p>
+          <p class="pillar__body">Jedes Thema ist klar gegliedert — von der Übersicht bis zum Detail. Keine Informations-Silos, keine verlorenen Chat-Verläufe.</p>
+        </div>
+        <div class="pillar" role="listitem">
+          <p class="pillar__name">Vollständig</p>
+          <p class="pillar__body">Alle relevanten Bereiche von Server-Setup bis Custom Nodes in einem gemeinsamen, wachsenden System.</p>
+        </div>
+        <div class="pillar" role="listitem">
+          <p class="pillar__name">Verlässlich</p>
+          <p class="pillar__body">Geprüftes Wissen, klare Schritt-für-Schritt-Anleitungen und echte Troubleshooting-Erfahrungen aus der Praxis.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Stats Bar ──────────────────────────────────────────── -->
+  <div class="stats-bar" role="list" aria-label="Kennzahlen">
+    <div class="stat fade-up" role="listitem">
+      <p class="stat__value">9</p>
+      <p class="stat__label">Themenbereiche</p>
+    </div>
+    <div class="stat fade-up" role="listitem">
+      <p class="stat__value">100+</p>
+      <p class="stat__label">Anleitungen</p>
+    </div>
+    <div class="stat fade-up" role="listitem">
+      <p class="stat__value">GPU</p>
+      <p class="stat__label">Infrastruktur-Fokus</p>
+    </div>
+    <div class="stat fade-up" role="listitem">
+      <p class="stat__value">∞</p>
+      <p class="stat__label">Immer erweiterbar</p>
+    </div>
+  </div>
+
+  <!-- ── Categories ─────────────────────────────────────────── -->
+  <section class="section tile-parch" id="kategorien" aria-labelledby="kategorien-h2">
+    <div class="section__inner">
+      <p class="section__eyebrow fade-up">Alle Themenbereiche</p>
+      <h2 id="kategorien-h2" class="section__headline fade-up">9 Bereiche. Ein System.</h2>
+      <div class="categories-grid fade-up" role="list">
+
+        <article class="cat-card" role="listitem">
+          <svg class="cat-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="4" y="8" width="32" height="7" rx="1.5"/>
+            <rect x="4" y="19" width="32" height="7" rx="1.5"/>
+            <rect x="4" y="30" width="32" height="4" rx="1"/>
+            <circle cx="33" cy="11.5" r="1.5" fill="currentColor" stroke="none"/>
+            <circle cx="33" cy="22.5" r="1.5" fill="currentColor" stroke="none"/>
+          </svg>
+          <h3 class="cat-card__name">Server Setup</h3>
+          <p class="cat-card__desc">DGX-Konfiguration, Hardware-Einrichtung, Netzwerk und Infrastruktur für GPU-Workloads.</p>
+          <span class="cat-card__cta" aria-label="Server Setup Anleitungen öffnen">
+            Öffnen <span class="cat-card__cta-arrow" aria-hidden="true">→</span>
+          </span>
+        </article>
+
+        <article class="cat-card" role="listitem">
+          <svg class="cat-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="4" y="20" width="8" height="8" rx="1"/>
+            <rect x="14" y="20" width="8" height="8" rx="1"/>
+            <rect x="24" y="20" width="8" height="8" rx="1"/>
+            <rect x="14" y="10" width="8" height="8" rx="1"/>
+            <rect x="24" y="10" width="8" height="8" rx="1"/>
+            <path d="M5 32 Q20 36 35 32" stroke-linecap="round"/>
+          </svg>
+          <h3 class="cat-card__name">Docker</h3>
+          <p class="cat-card__desc">Container, Images, Compose-Files, NVIDIA Runtime und Deployment-Strategien.</p>
+          <span class="cat-card__cta" aria-label="Docker Anleitungen öffnen">
+            Öffnen <span class="cat-card__cta-arrow" aria-hidden="true">→</span>
+          </span>
+        </article>
+
+        <article class="cat-card" role="listitem">
+          <svg class="cat-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="10" cy="20" r="4"/>
+            <circle cx="30" cy="10" r="4"/>
+            <circle cx="30" cy="30" r="4"/>
+            <line x1="14" y1="18" x2="26" y2="12"/>
+            <line x1="14" y1="22" x2="26" y2="28"/>
+          </svg>
+          <h3 class="cat-card__name">ComfyUI</h3>
+          <p class="cat-card__desc">Interface, Node-Graph, Pipelines, Einstellungen und Konfigurationsoptionen.</p>
+          <span class="cat-card__cta" aria-label="ComfyUI Anleitungen öffnen">
+            Öffnen <span class="cat-card__cta-arrow" aria-hidden="true">→</span>
+          </span>
+        </article>
+
+        <article class="cat-card" role="listitem">
+          <svg class="cat-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="20" cy="9" r="4"/>
+            <circle cx="9" cy="29" r="4"/>
+            <circle cx="31" cy="29" r="4"/>
+            <circle cx="20" cy="21" r="3"/>
+            <line x1="20" y1="13" x2="20" y2="18"/>
+            <line x1="12" y1="26" x2="17.5" y2="23"/>
+            <line x1="28" y1="26" x2="22.5" y2="23"/>
+          </svg>
+          <h3 class="cat-card__name">Modelle</h3>
+          <p class="cat-card__desc">Weights, Architekturen, VRAM-Anforderungen und Checkpoint-Management.</p>
+          <span class="cat-card__cta" aria-label="Modelle Anleitungen öffnen">
+            Öffnen <span class="cat-card__cta-arrow" aria-hidden="true">→</span>
+          </span>
+        </article>
+
+        <article class="cat-card" role="listitem">
+          <svg class="cat-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="4" y="6" width="10" height="9" rx="1.5"/>
+            <rect x="15" y="16" width="10" height="9" rx="1.5"/>
+            <rect x="26" y="26" width="10" height="7" rx="1.5"/>
+            <polyline points="14,11 19.5,11 19.5,16"/>
+            <polyline points="25,20 30.5,20 30.5,26"/>
+          </svg>
+          <h3 class="cat-card__name">Workflows</h3>
+          <p class="cat-card__desc">Pipelines, Automatisierung, Batch-Processing und optimierte Ablaufketten.</p>
+          <span class="cat-card__cta" aria-label="Workflows Anleitungen öffnen">
+            Öffnen <span class="cat-card__cta-arrow" aria-hidden="true">→</span>
+          </span>
+        </article>
+
+        <article class="cat-card" role="listitem">
+          <svg class="cat-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M10 6h6v4h4v4h4v4h4v4H16v-4h-4v-4H8v-4h2z"/>
+            <rect x="6" y="28" width="13" height="6" rx="1.5"/>
+            <line x1="19" y1="31" x2="25" y2="31"/>
+            <circle cx="27" cy="31" r="2" fill="currentColor" stroke="none"/>
+          </svg>
+          <h3 class="cat-card__name">Custom Nodes</h3>
+          <p class="cat-card__desc">Erweiterungen, Plugin-Installation, kompatible Pakete und Abhängigkeiten.</p>
+          <span class="cat-card__cta" aria-label="Custom Nodes Anleitungen öffnen">
+            Öffnen <span class="cat-card__cta-arrow" aria-hidden="true">→</span>
+          </span>
+        </article>
+
+        <article class="cat-card" role="listitem">
+          <svg class="cat-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="4" y="12" width="32" height="16" rx="2.5"/>
+            <rect x="9" y="17" width="7" height="6" rx="1"/>
+            <rect x="18" y="17" width="7" height="6" rx="1"/>
+            <line x1="8"  y1="12" x2="8"  y2="8"/>
+            <line x1="14" y1="12" x2="14" y2="8"/>
+            <line x1="20" y1="12" x2="20" y2="8"/>
+            <line x1="26" y1="12" x2="26" y2="8"/>
+            <line x1="32" y1="12" x2="32" y2="8"/>
+            <line x1="8"  y1="28" x2="8"  y2="32"/>
+            <line x1="14" y1="28" x2="14" y2="32"/>
+            <line x1="20" y1="28" x2="20" y2="32"/>
+            <line x1="26" y1="28" x2="26" y2="32"/>
+            <line x1="32" y1="28" x2="32" y2="32"/>
+          </svg>
+          <h3 class="cat-card__name">GPU-Strategien</h3>
+          <p class="cat-card__desc">VRAM-Optimierung, Multi-GPU-Setup, Performance-Tuning und Monitoring.</p>
+          <span class="cat-card__cta" aria-label="GPU-Strategien Anleitungen öffnen">
+            Öffnen <span class="cat-card__cta-arrow" aria-hidden="true">→</span>
+          </span>
+        </article>
+
+        <article class="cat-card" role="listitem">
+          <svg class="cat-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="20" cy="20" r="14"/>
+            <line x1="20" y1="12" x2="20" y2="22"/>
+            <circle cx="20" cy="27" r="1.5" fill="currentColor" stroke="none"/>
+          </svg>
+          <h3 class="cat-card__name">Troubleshooting</h3>
+          <p class="cat-card__desc">Fehlerdiagnose, häufige Probleme, Lösungsstrategien und CUDA-Fehler.</p>
+          <span class="cat-card__cta" aria-label="Troubleshooting Anleitungen öffnen">
+            Öffnen <span class="cat-card__cta-arrow" aria-hidden="true">→</span>
+          </span>
+        </article>
+
+        <article class="cat-card" role="listitem">
+          <svg class="cat-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="7" y="4" width="26" height="32" rx="2.5"/>
+            <line x1="13" y1="13" x2="27" y2="13"/>
+            <line x1="13" y1="20" x2="27" y2="20"/>
+            <line x1="13" y1="27" x2="22" y2="27"/>
+          </svg>
+          <h3 class="cat-card__name">Schritt-für-Schritt</h3>
+          <p class="cat-card__desc">Geführte Anleitungen für vollständige Setup-Prozesse — von Anfang bis Ende.</p>
+          <span class="cat-card__cta" aria-label="Schritt-für-Schritt Anleitungen öffnen">
+            Öffnen <span class="cat-card__cta-arrow" aria-hidden="true">→</span>
+          </span>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Quickstart ──────────────────────────────────────────── -->
+  <section class="section tile-dark" id="schnellstart" aria-labelledby="quickstart-h2">
+    <div class="section__inner">
+      <div class="featured-layout">
+        <div>
+          <p class="section__eyebrow fade-up">Erste Schritte</p>
+          <h2 id="quickstart-h2" class="section__headline fade-up">
+            Schnellstart.<br>Vier Schritte.
+          </h2>
+          <p class="section__subhead fade-up">
+            Neue Umgebung? Diese Reihenfolge hat sich in der Praxis bewährt.
+          </p>
+          <div class="fade-up" style="margin-top: var(--sp-xxl);">
+            <a href="#kategorien" class="btn-primary">Alle Anleitungen</a>
+          </div>
+        </div>
+        <div class="step-list fade-up" role="list">
+          <div class="step" role="listitem">
+            <span class="step__num" aria-hidden="true">01</span>
+            <div>
+              <p class="step__title">Server & Hardware einrichten</p>
+              <p class="step__desc">DGX-Setup, BIOS, Netzwerk und erste Betriebssystem-Konfiguration mit NVIDIA-Treibern.</p>
+            </div>
+          </div>
+          <div class="step" role="listitem">
+            <span class="step__num" aria-hidden="true">02</span>
+            <div>
+              <p class="step__title">Docker & Container aufsetzen</p>
+              <p class="step__desc">NVIDIA Container Toolkit installieren, Docker Compose konfigurieren und GPU-Zugriff testen.</p>
+            </div>
+          </div>
+          <div class="step" role="listitem">
+            <span class="step__num" aria-hidden="true">03</span>
+            <div>
+              <p class="step__title">Modelle & Checkpoints laden</p>
+              <p class="step__desc">Checkpoint-Struktur verstehen, VRAM-Bedarf prüfen und die richtigen Weights platzieren.</p>
+            </div>
+          </div>
+          <div class="step" role="listitem">
+            <span class="step__num" aria-hidden="true">04</span>
+            <div>
+              <p class="step__title">ComfyUI starten & erweitern</p>
+              <p class="step__desc">Interface aufsetzen, Custom Nodes installieren und erste eigene Workflows aufbauen.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Content Formats ────────────────────────────────────── -->
+  <section class="section tile-light" id="formate" aria-labelledby="formate-h2">
+    <div class="section__inner">
+      <p class="section__eyebrow fade-up">Wissensformate</p>
+      <h2 id="formate-h2" class="section__headline fade-up">Drei Arten von Wissen.</h2>
+      <div class="formats-grid fade-up" role="list">
+
+        <div class="format-card" role="listitem">
+          <svg class="format-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <polyline points="6,6 6,34 34,34"/>
+            <polyline points="10,26 16,16 22,22 30,10"/>
+          </svg>
+          <h3 class="format-card__title">Schritt-für-Schritt</h3>
+          <p class="format-card__body">Geführte Anleitungen die dich sicher durch komplexe Prozesse führen — von Anfang bis Ende, ohne Lücken. Für neue Setups und unbekannte Bereiche.</p>
+        </div>
+
+        <div class="format-card" role="listitem">
+          <svg class="format-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="20" cy="20" r="14"/>
+            <line x1="20" y1="13" x2="20" y2="22"/>
+            <circle cx="20" cy="27" r="1.5" fill="currentColor" stroke="none"/>
+          </svg>
+          <h3 class="format-card__title">Troubleshooting</h3>
+          <p class="format-card__body">Bekannte Fehler, ihre Ursachen und geprüfte Lösungen. Direkt zum Problem, direkt zur Antwort. Kein langes Suchen mehr.</p>
+        </div>
+
+        <div class="format-card" role="listitem">
+          <svg class="format-card__icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="7" y="4" width="26" height="32" rx="2.5"/>
+            <line x1="13" y1="13" x2="27" y2="13"/>
+            <line x1="13" y1="20" x2="27" y2="20"/>
+            <line x1="13" y1="27" x2="22" y2="27"/>
+          </svg>
+          <h3 class="format-card__title">Referenz</h3>
+          <p class="format-card__body">Technische Dokumentation, Parameter-Übersichten und Spezifikationen zum schnellen Nachschlagen — ohne den Kontext zu verlieren.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Philosophy ─────────────────────────────────────────── -->
+  <section class="section tile-parch philosophy" aria-label="Plattform-Philosophie">
+    <div class="section__inner">
+      <blockquote class="philosophy__quote fade-up">
+        "Technisches Wissen sollte nicht in Chat-Verläufen verschwinden.
+        Es gehört dokumentiert, strukturiert und jederzeit abrufbar."
+      </blockquote>
+      <p class="philosophy__body fade-up">
+        Diese Wissensbasis ist der erste Baustein eines größeren Systems —
+        ein Ort, an dem Erfahrungen festgehalten werden, damit sie beim
+        nächsten Mal sofort verfügbar sind.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── CTA ────────────────────────────────────────────────── -->
+  <section class="section tile-dark-3 cta" aria-label="Einstieg">
+    <div class="section__inner">
+      <p class="section__eyebrow fade-up" style="text-align:center">Bereit einzutauchen</p>
+      <h2 class="section__headline fade-up" style="text-align:center;margin-left:auto;margin-right:auto;max-width:560px;">
+        Die Wissensbasis wartet.
+      </h2>
+      <p class="section__subhead fade-up" style="margin:0 auto var(--sp-xxl);text-align:center">
+        Alle 9 Bereiche. Alle Anleitungen. Offen und bereit.
+      </p>
+      <div class="cta__actions fade-up">
+        <a href="#kategorien" class="btn-primary">Alle Themenbereiche</a>
+        <a href="#schnellstart" class="btn-ghost-dark">Schnellstart</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__grid">
+        <div>
+          <p class="footer__brand-name">KI Docs</p>
+          <p class="footer__brand-desc">Strukturierte technische Dokumentation für GPU-Infrastruktur, ComfyUI und KI-Tooling. Wächst mit deinen Erfahrungen.</p>
+        </div>
+        <div>
+          <p class="footer__col-title">Infrastruktur</p>
+          <ul class="footer__links">
+            <li><a href="#">Server Setup</a></li>
+            <li><a href="#">Docker</a></li>
+            <li><a href="#">GPU-Strategien</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__col-title">ComfyUI</p>
+          <ul class="footer__links">
+            <li><a href="#">Interface</a></li>
+            <li><a href="#">Modelle</a></li>
+            <li><a href="#">Workflows</a></li>
+            <li><a href="#">Custom Nodes</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__col-title">Hilfe</p>
+          <ul class="footer__links">
+            <li><a href="#">Troubleshooting</a></li>
+            <li><a href="#">Schritt-für-Schritt</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__col-title">Plattform</p>
+          <ul class="footer__links">
+            <li><a href="#">Übersicht</a></li>
+            <li><a href="#schnellstart">Schnellstart</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="footer__legal">© 2025 KI Docs. Persönliche Wissensbasis. Alle Inhalte zur eigenen Nutzung.</p>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            observer.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -32px 0px' }
+    );
+    document.querySelectorAll('.fade-up').forEach((el) => observer.observe(el));
+  </script>
+
+</body>
+</html>

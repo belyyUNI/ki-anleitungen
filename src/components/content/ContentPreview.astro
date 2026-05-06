@@ -1,0 +1,96 @@
+---
+import Button from "@components/ui/Button.astro";
+import GuideCard from "./GuideCard.astro";
+import GuideGrid from "./GuideGrid.astro";
+import type { GuideInfo } from "./GuideCard.astro";
+
+export interface Props {
+  title: string;
+  description?: string;
+  guides: GuideInfo[];
+  moreHref: string;
+  moreLabel?: string;
+}
+
+const {
+  title,
+  description,
+  guides,
+  moreHref,
+  moreLabel = "Alle anzeigen",
+} = Astro.props;
+
+const headingId = `heading-${title.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase()}`;
+---
+
+<section class="preview" aria-labelledby={headingId}>
+  <div class="preview-inner">
+    <div class="preview-header">
+      <div>
+        <h2 id={headingId} class="preview-heading">
+          {title}
+        </h2>
+        {description && <p class="preview-desc">{description}</p>}
+      </div>
+      <Button href={moreHref} variant="ghost" size="sm">
+        {moreLabel}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </Button>
+    </div>
+
+    {
+      guides.length > 0 ? (
+        <GuideGrid>
+          {guides.map((guide) => <GuideCard {...guide} />)}
+        </GuideGrid>
+      ) : (
+        <div class="preview-empty">
+          <p>Noch keine Eintrage vorhanden.</p>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .preview {
+    padding-block: var(--space-16);
+  }
+
+  .preview-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+  }
+
+  .preview-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-6);
+    margin-block-end: var(--space-10);
+  }
+
+  .preview-heading {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+  }
+
+  .preview-desc {
+    margin-block-start: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    max-width: 48ch;
+  }
+
+  .preview-empty {
+    text-align: center;
+    padding: var(--space-10) var(--space-6);
+    color: var(--color-text-tertiary);
+    font-size: var(--text-sm);
+    border: 1px dashed var(--color-surface-3);
+    border-radius: var(--radius-lg);
+  }
+</style>

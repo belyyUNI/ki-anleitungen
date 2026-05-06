@@ -1,0 +1,28 @@
+---
+export interface Props {
+  variant?: "default" | "accent" | "success" | "warning" | "error";
+  size?: "sm" | "md";
+  class?: string;
+}
+
+const { variant = "default", size = "md", class: className } = Astro.props;
+
+const variantClasses: Record<string, string> = {
+  default: "bg-surface-2 text-text-secondary border-surface-3",
+  accent: "bg-accent-muted text-accent",
+  success: "bg-[rgba(0,212,170,0.1)] text-success",
+  warning: "bg-[rgba(240,192,64,0.1)] text-warning",
+  error: "bg-[rgba(255,85,85,0.1)] text-error",
+};
+
+const sizeClasses = {
+  sm: "text-xs px-2 py-0.5",
+  md: "text-xs px-2.5 py-1",
+};
+---
+
+<span
+  class={`inline-flex items-center font-medium border border-current/20 rounded-full leading-none ${variantClasses[variant]} ${sizeClasses[size]} ${className ?? ""}`}
+>
+  <slot />
+</span>

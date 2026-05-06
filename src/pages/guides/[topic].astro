@@ -1,0 +1,128 @@
+---
+import LandingLayout from "@layouts/LandingLayout.astro";
+import GuideGrid from "@components/content/GuideGrid.astro";
+import GuideCard from "@components/content/GuideCard.astro";
+import { getCollection } from "astro:content";
+
+const allGuides = await getCollection("guides", ({ data }) => !data.draft);
+
+const topicLabels: Record<string, string> = {
+  ssh: "SSH",
+  docker: "Docker",
+  comfyui: "ComfyUI",
+  dgx: "DGX",
+  gpu: "GPU",
+  modelle: "Modelle",
+  workflows: "Workflows",
+  allgemein: "Allgemein",
+};
+
+const topicDetails: Record<string, { description: string; difficulty: string }> = {
+  ssh: { description: "SSH-Verbindung zum DGX-Server aufbauen und erste Schritte.", difficulty: "anfanger" },
+  docker: { description: "Docker-Images, Container und die wichtigsten Befehle verstehen.", difficulty: "anfanger" },
+  comfyui: { description: "ComfyUI starten, stoppen, GPU wechseln und erweiterte Konfiguration.", difficulty: "fortgeschritten" },
+  dgx: { description: "Projektstruktur und Ordner auf dem DGX-Server einrichten.", difficulty: "anfanger" },
+  gpu: { description: "GPUs uberwachen, VRAM verstehen und OOM-Fehler vermeiden.", difficulty: "fortgeschritten" },
+  modelle: { description: "KI-Modelle herunterladen, prufen und richtig einsortieren.", difficulty: "fortgeschritten" },
+  workflows: { description: "ComfyUI-Workflows importieren, verwalten und von GitHub laden.", difficulty: "anfanger" },
+  allgemein: { description: "Projektubersicht, lokal vs. Server und Grundkonzepte.", difficulty: "anfanger" },
+};
+
+export function getStaticPaths() {
+  const topics = ["ssh", "docker", "comfyui", "dgx", "gpu", "modelle", "workflows", "allgemein"];
+  return topics.map((topic) => ({ params: { topic } }));
+}
+
+const { topic } = Astro.params;
+const label = topicLabels[topic] ?? topic;
+const details = topicDetails[topic] ?? { description: "", difficulty: "anfanger" };
+
+const topicGuides = allGuides
+  .filter((g) => g.data.topic === topic)
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .map((g) => ({
+    title: g.data.title,
+    description: g.data.description,
+    difficulty: g.data.difficulty,
+    topic: label,
+    readingTime: g.data.readingTimeMinutes ?? 5,
+    href: `/guides/${g.id.replace(/\.md$/, "")}`,
+  }));
+---
+
+<LandingLayout title={`${label} - Anleitungen`} description={`${label}: ${details.description}`}>
+  <div class="page">
+    <div class="hero">
+      <a href="/guides/" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Alle Anleitungen
+      </a>
+      <h1>{label}</h1>
+      <p class="lead">{details.description}</p>
+    </div>
+
+    {
+      topicGuides.length > 0 ? (
+        <GuideGrid>
+          {topicGuides.map((guide) => <GuideCard {...guide} />)}
+        </GuideGrid>
+      ) : (
+        <div class="empty">
+          <p>Noch keine Anleitungen in dieser Kategorie.</p>
+          <a href="/guides/">Zuruck zur Ubersicht</a>
+        </div>
+      )
+    }
+  </div>
+</LandingLayout>
+
+<style>
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6) var(--space-24);
+  }
+
+  .hero {
+    margin-block-end: var(--space-12);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-block-end: var(--space-4);
+    transition: color 150ms ease;
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-text-primary);
+    margin-block-end: var(--space-2);
+  }
+
+  .lead {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .empty {
+    text-align: center;
+    padding: var(--space-16) var(--space-8);
+    color: var(--color-text-secondary);
+  }
+
+  .empty a {
+    color: var(--color-accent);
+    font-weight: var(--font-weight-medium);
+  }
+</style>

@@ -1,0 +1,85 @@
+---
+import Badge from "@components/ui/Badge.astro";
+import Card from "@components/ui/Card.astro";
+
+export interface GuideInfo {
+  title: string;
+  description: string;
+  difficulty: "anfanger" | "fortgeschritten" | "experte";
+  topic: string;
+  readingTime: number;
+  href: string;
+}
+
+const { title, description, difficulty, topic, readingTime } = Astro.props as GuideInfo;
+
+const difficultyLabels: Record<string, string> = {
+  anfanger: "Anfanger",
+  fortgeschritten: "Fortgeschritten",
+  experte: "Experte",
+};
+
+const difficultyVariants = {
+  anfanger: "success",
+  fortgeschritten: "warning",
+  experte: "error",
+} as const;
+---
+
+<Card href={Astro.props.href} hoverable as="article">
+  <div class="guide-card-body">
+    <div class="guide-card-meta">
+      <Badge variant="default" size="sm">{topic}</Badge>
+      <Badge variant={difficultyVariants[difficulty]} size="sm">
+        {difficultyLabels[difficulty]}
+      </Badge>
+    </div>
+
+    <h3 class="guide-card-title">{title}</h3>
+    <p class="guide-card-desc">{description}</p>
+
+    <span class="guide-card-time">{readingTime} min Lesezeit</span>
+  </div>
+</Card>
+
+<style>
+  .guide-card-body {
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    height: 100%;
+  }
+
+  .guide-card-meta {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .guide-card-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+    color: var(--color-text-primary);
+    transition: color 150ms ease;
+  }
+
+  :global(.group:hover) .guide-card-title {
+    color: var(--color-accent);
+  }
+
+  .guide-card-desc {
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+    flex: 1;
+  }
+
+  .guide-card-time {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    margin-block-start: auto;
+  }
+</style>

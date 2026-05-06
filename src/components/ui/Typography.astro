@@ -1,0 +1,21 @@
+---
+export interface Props {
+  as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
+  variant?: "heading" | "lead" | "body" | "muted" | "code";
+  class?: string;
+}
+
+const { as: Tag = "p", variant = "body", class: className } = Astro.props;
+
+const variantClasses: Record<string, string> = {
+  heading: "font-semibold tracking-tight text-text-primary",
+  lead: "text-lg leading-relaxed text-text-secondary max-w-[60ch]",
+  body: "text-text-primary",
+  muted: "text-sm text-text-tertiary",
+  code: "font-mono text-sm text-accent bg-code-bg border border-code-border rounded px-1.5 py-0.5",
+};
+---
+
+<Tag class={`${variantClasses[variant]} ${className ?? ""}`}>
+  <slot />
+</Tag>

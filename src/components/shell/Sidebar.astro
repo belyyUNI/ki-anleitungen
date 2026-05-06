@@ -1,0 +1,98 @@
+---
+export interface Props {
+  section: "guides" | "modelle" | "workflows" | "troubleshooting";
+  currentPath: string;
+}
+
+const { section, currentPath } = Astro.props;
+
+const sidebars = {
+  guides: [
+    { label: "Alle Anleitungen", href: "/guides/" },
+    { label: "SSH & Server-Zugang", href: "/guides/ssh/" },
+    { label: "Docker Grundlagen", href: "/guides/docker/" },
+    { label: "ComfyUI", href: "/guides/comfyui/" },
+    { label: "DGX Server", href: "/guides/dgx/" },
+    { label: "GPU Nutzung", href: "/guides/gpu/" },
+    { label: "Modelle & Downloads", href: "/guides/modelle/" },
+  ],
+  modelle: [
+    { label: "Alle Modelle", href: "/modelle/" },
+    { label: "Stable Diffusion", href: "/modelle/stable-diffusion/" },
+    { label: "Flux", href: "/modelle/flux/" },
+    { label: "LLMs", href: "/modelle/llm/" },
+  ],
+  workflows: [
+    { label: "Alle Workflows", href: "/workflows/" },
+    { label: "txt2img", href: "/workflows/txt2img/" },
+    { label: "img2img", href: "/workflows/img2img/" },
+    { label: "ControlNet", href: "/workflows/controlnet/" },
+    { label: "Upscaling", href: "/workflows/upscaling/" },
+  ],
+  troubleshooting: [
+    { label: "Alle Fehler", href: "/troubleshooting/" },
+    { label: "GPU & CUDA", href: "/troubleshooting/gpu/" },
+    { label: "Docker", href: "/troubleshooting/docker/" },
+    { label: "ComfyUI", href: "/troubleshooting/comfyui/" },
+    { label: "Python & Torch", href: "/troubleshooting/python/" },
+    { label: "Modelle", href: "/troubleshooting/modelle/" },
+    { label: "SSH & Netzwerk", href: "/troubleshooting/ssh/" },
+  ],
+};
+
+const items = sidebars[section];
+---
+
+<nav class="sidebar" aria-label="Seitennavigation">
+  <ul>
+    {
+      items.map((item) => {
+        const isActive = currentPath === item.href || (item.href !== `/${section}/` && currentPath.startsWith(item.href));
+        return (
+          <li>
+            <a
+              href={item.href}
+              class={`sidebar-link ${isActive ? "is-active" : ""}`}
+              {...(isActive ? { "aria-current": "page" } : {})}
+            >
+              {item.label}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>
+
+<style>
+  .sidebar {
+    width: 100%;
+  }
+
+  .sidebar ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .sidebar-link {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-md);
+    transition: color 150ms ease, background-color 150ms ease;
+  }
+
+  .sidebar-link:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-2);
+  }
+
+  .sidebar-link.is-active {
+    color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+    font-weight: var(--font-weight-medium);
+  }
+</style>
